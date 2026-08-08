@@ -1,20 +1,11 @@
-"""Provides an API for talking to HD44780 compatible character LCDs."""
-
 import time
 
 class LcdApi:
-    """Implements the API for talking with HD44780 compatible character LCDs.
-    This class only knows what commands to send to the LCD, and not how to get
-    them to the LCD.
-
-    It is expected that a derived class will implement the hal_xxx functions.
-    """
-
     # The following constant names were lifted from the avrlib lcd.h
     # header file, however, I changed the definitions from bit numbers
     # to bit masks.
     #
-    # HD44780 LCD controller command set
+    # LCD controller command set
 
     LCD_CLR = 0x01              # DB0: clear display
     LCD_HOME = 0x02             # DB1: return to home position
@@ -158,10 +149,10 @@ class LcdApi:
         """
         location &= 0x7
         self.hal_write_command(self.LCD_CGRAM | (location << 3))
-        time.sleep_us(40)
+        self.hal_sleep_us(40)
         for i in range(8):
             self.hal_write_data(charmap[i])
-            time.sleep_us(40)
+            self.hal_sleep_us(40)
         self.move_to(self.cursor_x, self.cursor_y)
 
     def hal_backlight_on(self):
@@ -193,3 +184,7 @@ class LcdApi:
         function.
         """
         raise NotImplementedError
+
+    def hal_sleep_us(self, usecs):
+        """Sleep for some time (given in microseconds)."""
+        time.sleep_us(usecs)

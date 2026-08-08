@@ -1,9 +1,6 @@
-from lcd_api import LcdApi
+from LCD_API import LcdApi
 from machine import I2C
 from time import sleep_ms
-
-# The PCF8574 has a jumper selectable address: 0x20 - 0x27
-DEFAULT_I2C_ADDR = 0x27
 
 # Defines shifts or masks for the various LCD line attached to the PCF8574
 
@@ -14,9 +11,7 @@ SHIFT_BACKLIGHT = 3
 SHIFT_DATA = 4
 
 
-class I2cLcd(LcdApi):
-    """Implements a HD44780 character LCD connected via PCF8574 on I2C."""
-
+class I2CLcd(LcdApi):
     def __init__(self, i2c, i2c_addr, num_lines, num_columns):
         self.i2c = i2c
         self.i2c_addr = i2c_addr
@@ -78,3 +73,5 @@ class I2cLcd(LcdApi):
         byte = (MASK_RS | (self.backlight << SHIFT_BACKLIGHT) | ((data & 0x0f) << SHIFT_DATA))
         self.i2c.writeto(self.i2c_addr, bytearray([byte | MASK_E]))
         self.i2c.writeto(self.i2c_addr, bytearray([byte]))
+
+
